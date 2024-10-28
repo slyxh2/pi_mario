@@ -15,6 +15,7 @@ keybinding = {
     'action':pg.K_s,
     'jump':pg.K_a,
     'left':pg.K_LEFT,
+    # 'left': 'L',
     'right':pg.K_RIGHT,
     'down':pg.K_DOWN,
     'sensor_left':0,

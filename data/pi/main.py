@@ -1,8 +1,7 @@
 import time
 from bluepy.btle import Peripheral, UUID
-import struct
 
-PICO_MAC_ADDRESS = "2C:CF:67:07:40:6B"  # Replace with your Pico's MAC address
+PICO_MAC_ADDRESS = "2C:CF:67:07:45:70"  # Replace with your Pico's MAC address
 TEMP_CHAR_UUID = "00002A6E-0000-1000-8000-00805f9b34fb"
 
 def connect_and_read_temperature(mac_address):
@@ -19,11 +18,7 @@ def connect_and_read_temperature(mac_address):
         # Read the value
         while True:
             temperature_value = characteristic.read()
-            temperature_value = int.from_bytes(temperature_value, 'little')
-            
-            if temperature_value >32768:
-                temperature_value -= 65536
-            print(f"Temperature (raw value): {temperature_value}")
+            print(f"Temperature (raw value): {int.from_bytes(temperature_value, 'little')}")
             time.sleep(2)
         # Disconnect
         device.disconnect()
