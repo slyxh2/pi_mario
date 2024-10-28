@@ -411,7 +411,7 @@ class Mario(pg.sprite.Sprite):
         elif self.state == c.WALK:
             self.walking(keys, fire_group, sensor_keys)
         elif self.state == c.JUMP:
-            self.jumping(keys, fire_group)
+            self.jumping(keys, fire_group,sensor_keys)
         elif self.state == c.FALL:
             self.falling(keys, fire_group)
         elif self.state == c.DEATH_JUMP:
@@ -630,7 +630,7 @@ class Mario(pg.sprite.Sprite):
         return animation_speed
 
 
-    def jumping(self, keys, fire_group):
+    def jumping(self, keys, fire_group,sensor_keys):
         """Called when Mario is in a JUMP state."""
         self.allow_jump = False
         self.frame_index = 4

@@ -4,6 +4,13 @@ import os
 import pygame as pg
 import random
 
+import time
+from bluepy.btle import Peripheral, UUID
+import struct
+
+PICO_MAC_ADDRESS = "2C:CF:67:07:40:6B"  # Replace with your Pico's MAC address
+TEMP_CHAR_UUID = "00002A6E-0000-1000-8000-00805f9b34fb"
+
 keybinding = {
     'action':pg.K_s,
     'jump':pg.K_a,
@@ -23,7 +30,7 @@ class Control(object):
         self.done = False
         self.clock = pg.time.Clock()
         self.caption = caption
-        self.fps = 60
+        self.fps = 120
         self.show_fps = False
         self.current_time = 0.0
         self.keys = pg.key.get_pressed()
@@ -31,6 +38,8 @@ class Control(object):
         self.state_dict = {}
         self.state_name = None
         self.state = None
+        self.characteristic = None
+        
 
     def setup_states(self, state_dict, start_state):
         self.state_dict = state_dict
@@ -67,13 +76,27 @@ class Control(object):
             self.state.get_event(event)
             
     def detect_imu_sensor(self):
-        value = random.randint(-100, 100);
+        value = self.connect_and_read_temperature(PICO_MAC_ADDRESS)
         self.sensor_keys = [False, False, False]
+        if value == None:
+            return
         
         if value > 20:
             self.sensor_keys[1] = True
         elif value < -20:
             self.sensor_keys[0] = True
+            
+    def connect_and_read_temperature(self, mac_address):
+        if self.characteristic == None:
+            return 0
+        # Read the value
+        temperature_value = self.characteristic.read()
+        temperature_value = int.from_bytes(temperature_value, 'little')
+        
+        if temperature_value >32768:
+            temperature_value -= 65536
+            
+        return temperature_value
 
     def toggle_show_fps(self, key):
         if key == pg.K_F5:
@@ -83,6 +106,8 @@ class Control(object):
 
 
     def main(self):
+        self.connect_imu_sensor()
+        
         """Main loop for entire program"""
         while not self.done:
             self.event_loop()
@@ -93,7 +118,23 @@ class Control(object):
                 fps = self.clock.get_fps()
                 with_fps = "{} - {:.2f} FPS".format(self.caption, fps)
                 pg.display.set_caption(with_fps)
+    
+    def connect_imu_sensor(self):
+        try:
+            print("Connecting to device...")
+            # Connect to the peripheral device
+            device = Peripheral(PICO_MAC_ADDRESS)
+            print("Connected!")
 
+            # Get the service and characteristic
+            service = device.getServiceByUUID(UUID("0000181A-0000-1000-8000-00805f9b34fb"))  # Environmental Sensing
+            self.characteristic = service.getCharacteristics(UUID(TEMP_CHAR_UUID))[0]
+
+            # Disconnect
+            
+
+        except Exception as e:
+            print(f"Error: {e}")
 
 class _State(object):
     def __init__(self):

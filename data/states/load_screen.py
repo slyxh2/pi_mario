@@ -64,7 +64,7 @@ class GameOver(LoadScreen):
         """sets the state to send to the overhead info object"""
         return c.GAME_OVER
 
-    def update(self, surface, keys, current_time):
+    def update(self, surface, keys, current_time, sensor_keys):
         self.current_time = current_time
         self.sound_manager.update(self.persist, None)
 
@@ -96,7 +96,7 @@ class TimeOut(LoadScreen):
         """Sets the state to send to the overhead info object"""
         return c.TIME_OUT
 
-    def update(self, surface, keys, current_time):
+    def update(self, surface, keys, current_time, sensor_keys):
         self.current_time = current_time
 
         if (self.current_time - self.start_time) < 2400:
