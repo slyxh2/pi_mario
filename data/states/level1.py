@@ -351,33 +351,33 @@ class Level1(tools._State):
                                                      self.enemy_group)
 
 
-    def update(self, surface, keys, current_time):
+    def update(self, surface, keys, current_time, sensor_keys):
         """Updates Entire level using states.  Called by the control object"""
         self.game_info[c.CURRENT_TIME] = self.current_time = current_time
-        self.handle_states(keys)
+        self.handle_states(keys, sensor_keys)
         self.check_if_time_out()
         self.blit_everything(surface)
         self.sound_manager.update(self.game_info, self.mario)
 
 
 
-    def handle_states(self, keys):
+    def handle_states(self, keys, sensor_keys):
         """If the level is in a FROZEN state, only mario will update"""
         if self.state == c.FROZEN:
-            self.update_during_transition_state(keys)
+            self.update_during_transition_state(keys,sensor_keys)
         elif self.state == c.NOT_FROZEN:
-            self.update_all_sprites(keys)
+            self.update_all_sprites(keys, sensor_keys)
         elif self.state == c.IN_CASTLE:
             self.update_while_in_castle()
         elif self.state == c.FLAG_AND_FIREWORKS:
             self.update_flag_and_fireworks()
 
 
-    def update_during_transition_state(self, keys):
+    def update_during_transition_state(self, keys,sensor_keys):
         """Updates mario in a transition state (like becoming big, small,
          or dies). Checks if he leaves the transition state or dies to
          change the level state back"""
-        self.mario.update(keys, self.game_info, self.powerup_group)
+        self.mario.update(keys, self.game_info, self.powerup_group,sensor_keys)
         for score in self.moving_score_list:
             score.update(self.moving_score_list, self.game_info)
         if self.flag_score:
@@ -401,9 +401,9 @@ class Level1(tools._State):
                 self.game_info[c.LEVEL_STATE] = self.state = c.NOT_FROZEN
 
 
-    def update_all_sprites(self, keys):
+    def update_all_sprites(self, keys, sensor_keys):
         """Updates the location of all sprites on the screen."""
-        self.mario.update(keys, self.game_info, self.powerup_group)
+        self.mario.update(keys, self.game_info, self.powerup_group, sensor_keys)
         for score in self.moving_score_list:
             score.update(self.moving_score_list, self.game_info)
         if self.flag_score:
@@ -1430,5 +1430,6 @@ class Level1(tools._State):
         self.overhead_info_display.draw(surface)
         for score in self.moving_score_list:
             score.draw(surface)
+
 
 

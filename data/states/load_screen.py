@@ -31,7 +31,7 @@ class LoadScreen(tools._State):
         return c.LOAD_SCREEN
 
 
-    def update(self, surface, keys, current_time):
+    def update(self, surface, keys, current_time, sensor_keys):
         """Updates the loading screen"""
         if (current_time - self.start_time) < 2400:
             surface.fill(c.BLACK)
@@ -105,6 +105,7 @@ class TimeOut(LoadScreen):
             self.overhead_info.draw(surface)
         else:
             self.done = True
+
 
 
 
