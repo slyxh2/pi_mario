@@ -396,20 +396,20 @@ class Mario(pg.sprite.Sprite):
         return image
 
 
-    def update(self, keys, game_info, fire_group):
+    def update(self, keys, game_info, fire_group, sensor_keys):
         """Updates Mario's states and animations once per frame"""
         self.current_time = game_info[c.CURRENT_TIME]
-        self.handle_state(keys, fire_group)
+        self.handle_state(keys, fire_group, sensor_keys)
         self.check_for_special_state()
         self.animation()
 
 
-    def handle_state(self, keys, fire_group):
+    def handle_state(self, keys, fire_group,sensor_keys):
         """Determines Mario's behavior based on his state"""
         if self.state == c.STAND:
-            self.standing(keys, fire_group)
+            self.standing(keys, fire_group, sensor_keys)
         elif self.state == c.WALK:
-            self.walking(keys, fire_group)
+            self.walking(keys, fire_group, sensor_keys)
         elif self.state == c.JUMP:
             self.jumping(keys, fire_group)
         elif self.state == c.FALL:
@@ -432,7 +432,7 @@ class Mario(pg.sprite.Sprite):
             self.falling_at_end_of_level()
 
 
-    def standing(self, keys, fire_group):
+    def standing(self, keys, fire_group, sensor_keys):
         """This function is called if Mario is standing still"""
         self.check_to_allow_jump(keys)
         self.check_to_allow_fireball(keys)
@@ -447,12 +447,12 @@ class Mario(pg.sprite.Sprite):
 
         if keys[tools.keybinding['down']]:
             self.crouching = True
-
-        if keys[tools.keybinding['left']]:
+    
+        if keys[tools.keybinding['left']] or sensor_keys[tools.keybinding['sensor_left']]:
             self.facing_right = False
             self.get_out_of_crouch()
             self.state = c.WALK
-        elif keys[tools.keybinding['right']]:
+        elif keys[tools.keybinding['right']] or sensor_keys[tools.keybinding['sensor_right']]:
             self.facing_right = True
             self.get_out_of_crouch()
             self.state = c.WALK
@@ -527,7 +527,7 @@ class Mario(pg.sprite.Sprite):
         return len(fireball_list)
 
 
-    def walking(self, keys, fire_group):
+    def walking(self, keys, fire_group, sensor_keys):
         """This function is called when Mario is in a walking state
         It changes the frame, checks for holding down the run button,
         checks for a jump, then adjusts the state if necessary"""
@@ -570,7 +570,7 @@ class Mario(pg.sprite.Sprite):
                     self.y_vel = c.JUMP_VEL
 
 
-        if keys[tools.keybinding['left']]:
+        if keys[tools.keybinding['left']] or sensor_keys[tools.keybinding['sensor_left']]:
             self.get_out_of_crouch()
             self.facing_right = False
             if self.x_vel > 0:
@@ -586,7 +586,7 @@ class Mario(pg.sprite.Sprite):
             elif self.x_vel < (self.max_x_vel * -1):
                 self.x_vel += self.x_accel
 
-        elif keys[tools.keybinding['right']]:
+        elif keys[tools.keybinding['right']] or sensor_keys[tools.keybinding['sensor_right']]:
             self.get_out_of_crouch()
             self.facing_right = True
             if self.x_vel < 0:
@@ -642,11 +642,11 @@ class Mario(pg.sprite.Sprite):
             self.gravity = c.GRAVITY
             self.state = c.FALL
 
-        if keys[tools.keybinding['left']]:
+        if keys[tools.keybinding['left']] or sensor_keys[tools.keybinding['sensor_left']]:
             if self.x_vel > (self.max_x_vel * - 1):
                 self.x_vel -= self.x_accel
 
-        elif keys[tools.keybinding['right']]:
+        elif keys[tools.keybinding['right']] or sensor_keys[tools.keybinding['sensor_right']]:
             if self.x_vel < self.max_x_vel:
                 self.x_vel += self.x_accel
 
@@ -1129,6 +1129,7 @@ class Mario(pg.sprite.Sprite):
             self.image = self.right_frames[self.frame_index]
         else:
             self.image = self.left_frames[self.frame_index]
+
 
 
 

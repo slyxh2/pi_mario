@@ -2,13 +2,16 @@ __author__ = 'justinarmstrong'
 
 import os
 import pygame as pg
+import random
 
 keybinding = {
     'action':pg.K_s,
     'jump':pg.K_a,
     'left':pg.K_LEFT,
     'right':pg.K_RIGHT,
-    'down':pg.K_DOWN
+    'down':pg.K_DOWN,
+    'sensor_left':0,
+    'sensor_right':1
 }
 
 class Control(object):
@@ -24,6 +27,7 @@ class Control(object):
         self.show_fps = False
         self.current_time = 0.0
         self.keys = pg.key.get_pressed()
+        self.sensor_keys = [False,False,False] # left, right, jump
         self.state_dict = {}
         self.state_name = None
         self.state = None
@@ -39,7 +43,7 @@ class Control(object):
             self.done = True
         elif self.state.done:
             self.flip_state()
-        self.state.update(self.screen, self.keys, self.current_time)
+        self.state.update(self.screen, self.keys, self.current_time, self.sensor_keys)
 
     def flip_state(self):
         previous, self.state_name = self.state_name, self.state.next
@@ -50,6 +54,8 @@ class Control(object):
 
 
     def event_loop(self):
+        self.detect_imu_sensor()
+        
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.done = True
@@ -59,7 +65,15 @@ class Control(object):
             elif event.type == pg.KEYUP:
                 self.keys = pg.key.get_pressed()
             self.state.get_event(event)
-
+            
+    def detect_imu_sensor(self):
+        value = random.randint(-100, 100);
+        self.sensor_keys = [False, False, False]
+        
+        if value > 20:
+            self.sensor_keys[1] = True
+        elif value < -20:
+            self.sensor_keys[0] = True
 
     def toggle_show_fps(self, key):
         if key == pg.K_F5:
@@ -142,6 +156,7 @@ def load_all_sfx(directory, accept=('.wav','.mpe','.ogg','.mdi')):
         if ext.lower() in accept:
             effects[name] = pg.mixer.Sound(os.path.join(directory, fx))
     return effects
+
 
 
 
