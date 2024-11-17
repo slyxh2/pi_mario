@@ -9,6 +9,7 @@ from bluepy.btle import Peripheral, UUID
 import struct
 
 PICO_MAC_ADDRESS = "2C:CF:67:07:40:6B"  # Replace with your Pico's MAC address
+
 TEMP_CHAR_UUID = "00002A6E-0000-1000-8000-00805f9b34fb"
 
 keybinding = {
@@ -19,7 +20,8 @@ keybinding = {
     'right':pg.K_RIGHT,
     'down':pg.K_DOWN,
     'sensor_left':0,
-    'sensor_right':1
+    'sensor_right':1,
+    'sensor_jump':2
 }
 
 class Control(object):
@@ -31,7 +33,7 @@ class Control(object):
         self.done = False
         self.clock = pg.time.Clock()
         self.caption = caption
-        self.fps = 120
+        self.fps = 60
         self.show_fps = False
         self.current_time = 0.0
         self.keys = pg.key.get_pressed()
@@ -40,6 +42,7 @@ class Control(object):
         self.state_name = None
         self.state = None
         self.characteristic = None
+        self.motionSensorCharacter = None
         
 
     def setup_states(self, state_dict, start_state):
@@ -64,8 +67,8 @@ class Control(object):
 
 
     def event_loop(self):
-        self.detect_imu_sensor()
-        
+        # self.detect_imu_sensor()
+        # keyboard listen event
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.done = True
@@ -75,10 +78,23 @@ class Control(object):
             elif event.type == pg.KEYUP:
                 self.keys = pg.key.get_pressed()
             self.state.get_event(event)
-            
+    
+    def handle_jump(self):
+        self.sensor_keys[2] = True
+
+    def clear_jump(self):
+        if self.sensor_keys[2] == False:
+            return
+        self.sensor_keys[2] = False
+    
+    def reset_sensor_keys(self):
+        self.sensor_keys = [False,False,False]
+
     def detect_imu_sensor(self):
         value = self.connect_and_read_temperature(PICO_MAC_ADDRESS)
-        self.sensor_keys = [False, False, False]
+        self.sensor_keys[0] = False
+        self.sensor_keys[1] = False
+
         if value == None:
             return
         
@@ -86,7 +102,7 @@ class Control(object):
             self.sensor_keys[1] = True
         elif value < -20:
             self.sensor_keys[0] = True
-            
+
     def connect_and_read_temperature(self, mac_address):
         if self.characteristic == None:
             return 0
@@ -98,7 +114,7 @@ class Control(object):
             temperature_value -= 65536
             
         return temperature_value
-
+    
     def toggle_show_fps(self, key):
         if key == pg.K_F5:
             self.show_fps = not self.show_fps
@@ -107,14 +123,14 @@ class Control(object):
 
 
     def main(self):
-        self.connect_imu_sensor()
-        
+        # self.connect_imu_sensor()
         """Main loop for entire program"""
         while not self.done:
             self.event_loop()
             self.update()
             pg.display.update()
             self.clock.tick(self.fps)
+            # self.reset_sensor_keys()
             if self.show_fps:
                 fps = self.clock.get_fps()
                 with_fps = "{} - {:.2f} FPS".format(self.caption, fps)
@@ -130,13 +146,11 @@ class Control(object):
             # Get the service and characteristic
             service = device.getServiceByUUID(UUID("0000181A-0000-1000-8000-00805f9b34fb"))  # Environmental Sensing
             self.characteristic = service.getCharacteristics(UUID(TEMP_CHAR_UUID))[0]
-
-            # Disconnect
             
 
         except Exception as e:
             print(f"Error: {e}")
-
+    
 class _State(object):
     def __init__(self):
         self.start_time = 0.0

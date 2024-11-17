@@ -456,7 +456,7 @@ class Mario(pg.sprite.Sprite):
             self.facing_right = True
             self.get_out_of_crouch()
             self.state = c.WALK
-        elif keys[tools.keybinding['jump']]:
+        elif keys[tools.keybinding['jump']] or sensor_keys[tools.keybinding['sensor_jump']]:
             if self.allow_jump:
                 if self.big:
                     setup.SFX['big_jump'].play()
@@ -557,7 +557,7 @@ class Mario(pg.sprite.Sprite):
             self.max_x_vel = c.MAX_WALK_SPEED
             self.x_accel = c.WALK_ACCEL
 
-        if keys[tools.keybinding['jump']]:
+        if keys[tools.keybinding['jump']] or sensor_keys[tools.keybinding['sensor_jump']]:
             if self.allow_jump:
                 if self.big:
                     setup.SFX['big_jump'].play()
@@ -650,7 +650,7 @@ class Mario(pg.sprite.Sprite):
             if self.x_vel < self.max_x_vel:
                 self.x_vel += self.x_accel
 
-        if not keys[tools.keybinding['jump']]:
+        if not keys[tools.keybinding['jump']] or sensor_keys[tools.keybinding['sensor_jump']]:
             self.gravity = c.GRAVITY
             self.state = c.FALL
 
