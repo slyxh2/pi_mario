@@ -434,7 +434,7 @@ class Mario(pg.sprite.Sprite):
 
     def standing(self, keys, fire_group, sensor_keys):
         """This function is called if Mario is standing still"""
-        self.check_to_allow_jump(keys)
+        self.check_to_allow_jump(keys, sensor_keys)
         self.check_to_allow_fireball(keys)
         
         self.frame_index = 0
@@ -461,7 +461,7 @@ class Mario(pg.sprite.Sprite):
                 if self.big:
                     setup.SFX['big_jump'].play()
                 else:
-                    setup.SFX['small_jump'].play()
+                    setup.SFX['big_jump'].play()
                 self.state = c.JUMP
                 self.y_vel = c.JUMP_VEL
         else:
@@ -485,9 +485,9 @@ class Mario(pg.sprite.Sprite):
         self.crouching = False
 
 
-    def check_to_allow_jump(self, keys):
+    def check_to_allow_jump(self, keys, sensor_keys):
         """Check to allow Mario to jump"""
-        if not keys[tools.keybinding['jump']]:
+        if not keys[tools.keybinding['jump']] and not sensor_keys[tools.keybinding['sensor_jump']]:
             self.allow_jump = True
 
 
@@ -532,7 +532,7 @@ class Mario(pg.sprite.Sprite):
         It changes the frame, checks for holding down the run button,
         checks for a jump, then adjusts the state if necessary"""
 
-        self.check_to_allow_jump(keys)
+        self.check_to_allow_jump(keys, sensor_keys)
         self.check_to_allow_fireball(keys)
 
         if self.frame_index == 0:
@@ -562,7 +562,7 @@ class Mario(pg.sprite.Sprite):
                 if self.big:
                     setup.SFX['big_jump'].play()
                 else:
-                    setup.SFX['small_jump'].play()
+                    setup.SFX['big_jump'].play()
                 self.state = c.JUMP
                 if self.x_vel > 4.5 or self.x_vel < -4.5:
                     self.y_vel = c.JUMP_VEL - .5

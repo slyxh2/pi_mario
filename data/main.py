@@ -22,9 +22,10 @@ def main():
     run_it.setup_states(state_dict, c.MAIN_MENU)
 
     try:
-       _thread.start_new_thread(sensor.detect_motion_sensor, ())
+      _thread.start_new_thread(sensor.detect_motion_sensor, ())
+      _thread.start_new_thread(sensor.detect_imu_sensor, ())
     except:
-       print ("Error")
+      print ("Thread Error")
        
     run_it.main()
 

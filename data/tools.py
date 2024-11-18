@@ -81,14 +81,19 @@ class Control(object):
     
     def handle_jump(self):
         self.sensor_keys[2] = True
+    
+    def handle_move_left(self):
+        self.sensor_keys[0] = True
+        self.sensor_keys[1] = False
+    
+    def handle_move_right(self):
+        self.sensor_keys[0] = False
+        self.sensor_keys[1] = True
 
     def clear_jump(self):
         if self.sensor_keys[2] == False:
             return
         self.sensor_keys[2] = False
-    
-    def reset_sensor_keys(self):
-        self.sensor_keys = [False,False,False]
 
     def detect_imu_sensor(self):
         value = self.connect_and_read_temperature(PICO_MAC_ADDRESS)
@@ -129,8 +134,9 @@ class Control(object):
             self.event_loop()
             self.update()
             pg.display.update()
+            if self.sensor_keys[2] == True:
+                self.clear_jump()
             self.clock.tick(self.fps)
-            # self.reset_sensor_keys()
             if self.show_fps:
                 fps = self.clock.get_fps()
                 with_fps = "{} - {:.2f} FPS".format(self.caption, fps)
