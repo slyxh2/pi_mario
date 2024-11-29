@@ -32,6 +32,9 @@ class Menu(tools._State):
         self.setup_background()
         self.setup_mario()
         self.setup_cursor()
+        
+        if self.led_controller:
+            self.led_controller.pattern_left_to_right()
 
 
     def setup_cursor(self):
@@ -131,6 +134,10 @@ class Menu(tools._State):
 
         self.persist = self.game_info
 
+    def cleanup(self):
+        if self.led_controller:
+            self.led_controller.clear()
+        return super().cleanup()
 
 
 

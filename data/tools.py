@@ -7,6 +7,7 @@ import random
 import time
 from bluepy.btle import Peripheral, UUID
 import struct
+from led import LEDController
 
 PICO_MAC_ADDRESS = "2C:CF:67:07:40:6B"  # Replace with your Pico's MAC address
 TEMP_CHAR_UUID = "00002A6E-0000-1000-8000-00805f9b34fb"
@@ -39,7 +40,7 @@ class Control(object):
         self.state_name = None
         self.state = None
         self.characteristic = None
-        
+        self.shared_display = {"led_controller": LEDController(num_leds=5)}
 
     def setup_states(self, state_dict, start_state):
         self.state_dict = state_dict
@@ -58,7 +59,7 @@ class Control(object):
         previous, self.state_name = self.state_name, self.state.next
         persist = self.state.cleanup()
         self.state = self.state_dict[self.state_name]
-        self.state.startup(self.current_time, persist)
+        self.state.startup(self.current_time, {**persist, **self.shared_display})
         self.state.previous = previous
 
 
@@ -145,6 +146,7 @@ class _State(object):
         self.next = None
         self.previous = None
         self.persist = {}
+        self.led_controller = None
 
     def get_event(self, event):
         pass
@@ -152,6 +154,9 @@ class _State(object):
     def startup(self, current_time, persistant):
         self.persist = persistant
         self.start_time = current_time
+        
+        if "led_controller" in self.persist:
+            self.led_controller = self.persist["led_controller"]
 
     def cleanup(self):
         self.done = False
