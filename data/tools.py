@@ -7,7 +7,7 @@ import random
 import time
 from bluepy.btle import Peripheral, UUID
 import struct
-from led import LEDController
+from data.led.led_controller import LEDController
 
 PICO_MAC_ADDRESS = "2C:CF:67:07:40:6B"  # Replace with your Pico's MAC address
 TEMP_CHAR_UUID = "00002A6E-0000-1000-8000-00805f9b34fb"
