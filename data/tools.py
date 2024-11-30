@@ -109,6 +109,7 @@ class Control(object):
     def main(self):
         self.connect_imu_sensor()
         
+        # LED strip flashes gradually lights up from left to right, then clear
         if self.led_controller:
             self.led_controller.pattern_left_to_right(255, 255, 255, delay=0.5)
             self.led_controller.clear()

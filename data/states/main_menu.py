@@ -134,6 +134,7 @@ class Menu(tools._State):
     def cleanup(self):
         if self.led_controller:
             self.led_controller.clear()
+            print("led cleaned up")
         return super().cleanup()
 
 
