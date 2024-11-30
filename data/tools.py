@@ -110,7 +110,7 @@ class Control(object):
         self.connect_imu_sensor()
         
         if self.led_controller:
-            self.led_controller.pattern_left_to_right(255, 255, 255, delay=1)
+            self.led_controller.pattern_left_to_right(255, 255, 255, delay=0.5)
         
         """Main loop for entire program"""
         while not self.done:
