@@ -42,7 +42,6 @@ class LEDController:
                     data.extend(self.rgb_to_spi_data(0, 0, 0))
             data.extend(self.reset_frame)
             data = [int(value) & 0xFF for value in data]
-            print(f"Pattern Step {i}: {data}")
             self.spi.xfer2(data)
             time.sleep(delay)
 
