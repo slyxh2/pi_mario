@@ -59,7 +59,7 @@ class Control(object):
         previous, self.state_name = self.state_name, self.state.next
         persist = self.state.cleanup()
         self.state = self.state_dict[self.state_name]
-        self.state.startup(self.current_time, {**persist, **self.shared_display})
+        self.state.startup(self.current_time, {**persist, "led_controller": self.shared_display})
         self.state.previous = previous
 
 
