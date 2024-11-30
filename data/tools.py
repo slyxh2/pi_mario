@@ -40,7 +40,7 @@ class Control(object):
         self.state_name = None
         self.state = None
         self.characteristic = None
-        self.shared_display = {"led_controller": LEDController(num_leds=5)}
+        self.led_controller = LEDController(num_leds=5)
 
     def setup_states(self, state_dict, start_state):
         self.state_dict = state_dict
@@ -59,7 +59,7 @@ class Control(object):
         previous, self.state_name = self.state_name, self.state.next
         persist = self.state.cleanup()
         self.state = self.state_dict[self.state_name]
-        self.state.startup(self.current_time, {**persist, "led_controller": self.shared_display})
+        self.state.startup(self.current_time, {**persist, "led_controller": self.led_controller})
         self.state.previous = previous
 
 
@@ -108,6 +108,10 @@ class Control(object):
 
     def main(self):
         self.connect_imu_sensor()
+        
+        if self.led_controller:
+            print("led exists")
+            self.led_controller.pattern_left_to_right(255, 255, 255, delay=0.1)
         
         """Main loop for entire program"""
         while not self.done:
@@ -202,15 +206,3 @@ def load_all_sfx(directory, accept=('.wav','.mpe','.ogg','.mdi')):
         if ext.lower() in accept:
             effects[name] = pg.mixer.Sound(os.path.join(directory, fx))
     return effects
-
-
-
-
-
-
-
-
-
-
-
-

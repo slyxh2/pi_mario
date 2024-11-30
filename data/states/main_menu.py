@@ -32,12 +32,6 @@ class Menu(tools._State):
         self.setup_background()
         self.setup_mario()
         self.setup_cursor()
-        
-        print("Main Menu Startup!")
-        
-        if self.led_controller:
-            print("led exists")
-            self.led_controller.pattern_left_to_right(255, 255, 255, delay=0.1)
 
 
     def setup_cursor(self):
