@@ -61,7 +61,8 @@ class Control(object):
         persist = self.state.cleanup()
         self.state = self.state_dict[self.state_name]
         self.state.startup(self.current_time, {**persist, "led_controller": self.led_controller})
-        print("现在led_controller：" + self.led_controller)
+        if not self.led_controller:
+            print("当前led_controller为空")
         self.state.previous = previous
 
 
