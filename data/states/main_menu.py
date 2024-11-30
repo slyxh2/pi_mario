@@ -32,12 +32,6 @@ class Menu(tools._State):
         self.setup_background()
         self.setup_mario()
         self.setup_cursor()
-        
-        print("Main Menu Startup!")
-        
-        if self.led_controller:
-            print("led exists")
-            self.led_controller.pattern_left_to_right(255, 255, 255, delay=0.1)
 
 
     def setup_cursor(self):
@@ -107,6 +101,11 @@ class Menu(tools._State):
         surface.blit(self.mario.image, self.mario.rect)
         surface.blit(self.cursor.image, self.cursor.rect)
         self.overhead_info.draw(surface)
+        print("Main Menu Startup!")
+        
+        if self.led_controller:
+            print("led exists")
+            self.led_controller.pattern_left_to_right(255, 255, 255, delay=0.1)
 
 
     def update_cursor(self, keys):
