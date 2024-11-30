@@ -60,9 +60,11 @@ class Control(object):
         print("进入flip_state函数了，目前state是：" + self.state_name + "下一个State是：" + self.state.next)
         persist = self.state.cleanup()
         self.state = self.state_dict[self.state_name]
-        self.state.startup(self.current_time, {**persist, "led_controller": self.led_controller})
         if not self.led_controller:
             print("当前led_controller为空")
+        else:
+            print("当前led_controller非空")
+        self.state.startup(self.current_time, {**persist, "led_controller": self.led_controller})
         self.state.previous = previous
 
 
