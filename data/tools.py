@@ -52,16 +52,16 @@ class Control(object):
         if self.state.quit:
             self.done = True
         elif self.state.done:
-            print("flip!")
             self.flip_state()
         self.state.update(self.screen, self.keys, self.current_time, self.sensor_keys)
 
     def flip_state(self):
-        print("进入flip_state函数了")
         previous, self.state_name = self.state_name, self.state.next
+        print("进入flip_state函数了，目前state是：" + self.state_name + "下一个State是：" + self.state.next)
         persist = self.state.cleanup()
         self.state = self.state_dict[self.state_name]
         self.state.startup(self.current_time, {**persist, "led_controller": self.led_controller})
+        print("现在led_controller：" + self.led_controller)
         self.state.previous = previous
 
 
