@@ -751,7 +751,7 @@ class Level1(tools._State):
                     coin_box.start_bump(self.moving_score_list)
                     if coin_box.contents == c.COIN:
                         self.game_info[c.COIN_TOTAL] += 1
-                        self.led_controller.flash_all(255, 255, 0)
+                        self.led_controller.flash_all_in_thread(255, 255, 0)
                 else:
                     coin_box.start_bump(self.moving_score_list)
 

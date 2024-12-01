@@ -1,5 +1,6 @@
 import spidev
 import time
+import threading
 
 class LEDController:
     """LED Controller for low-level SPI communication with LED strips."""
@@ -51,6 +52,10 @@ class LEDController:
             time.sleep(delay)
             self.clear()
             time.sleep(delay)
+    
+    def flash_all_in_thread(self, red, green, blue, times=1, delay=0.2):
+        thread = threading.Thread(target=self.flash_all, args=(red, green, blue, times, delay))
+        thread.start()
 
     def close(self):
         self.spi.close()
