@@ -10,10 +10,11 @@ class LoadScreen(tools._State):
     def __init__(self):
         tools._State.__init__(self)
 
-    def startup(self, current_time, persist):
+    def startup(self, current_time, persist, led_controller):
         self.start_time = current_time
         self.persist = persist
         self.game_info = self.persist
+        self.led_controller = led_controller
         self.next = self.set_next_state()
 
         info_state = self.set_overhead_info_state()
