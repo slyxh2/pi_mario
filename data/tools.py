@@ -56,19 +56,15 @@ class Control(object):
         self.state.update(self.screen, self.keys, self.current_time, self.sensor_keys)
 
     def flip_state(self):
-        previous, self.state_name = self.state_name, self.state.next
+        previous, self.state_name, led_controller = self.state_name, self.state.next, self.state.led_controller
         print("进入flip_state函数了，目前state是：" + self.state_name + "下一个State是：" + self.state.next)
         persist = self.state.cleanup()
         self.state = self.state_dict[self.state_name]
+        self.state.startup(self.current_time, persist, led_controller)
         if not self.state.led_controller:
             print("新State无led_controller")
         else:
             print("新State已初始化led_controller")
-        self.state.startup(self.current_time, {**persist, "led_controller": self.led_controller})
-        if not self.state.led_controller:
-            print("startup后新State无led_controller")
-        else:
-            print("startup后新State已初始化led_controller")
         self.state.previous = previous
 
 
@@ -165,13 +161,10 @@ class _State(object):
     def get_event(self, event):
         pass
 
-    def startup(self, current_time, persistant):
+    def startup(self, current_time, persistant, led_controller):
         self.persist = persistant
         self.start_time = current_time
-        
-        if "led_controller" in self.persist:
-            print("led_controller exist")
-            self.led_controller = self.persist["led_controller"]
+        self.led_controller = led_controller
 
     def cleanup(self):
         self.done = False

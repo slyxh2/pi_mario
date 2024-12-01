@@ -21,7 +21,7 @@ class Level1(tools._State):
     def __init__(self):
         tools._State.__init__(self)
 
-    def startup(self, current_time, persist):
+    def startup(self, current_time, persist, led_controller):
         """Called when the State object is created"""
         self.game_info = persist
         self.persist = self.game_info
@@ -38,6 +38,8 @@ class Level1(tools._State):
         self.moving_score_list = []
         self.overhead_info_display = info.OverheadInfo(self.game_info, c.LEVEL)
         self.sound_manager = game_sound.Sound(self.overhead_info_display)
+        
+        self.led_controller = led_controller
 
         self.setup_background()
         self.setup_ground()
