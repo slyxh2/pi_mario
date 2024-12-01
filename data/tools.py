@@ -65,6 +65,10 @@ class Control(object):
         else:
             print("新State已初始化led_controller")
         self.state.startup(self.current_time, {**persist, "led_controller": self.led_controller})
+        if not self.state.led_controller:
+            print("startup后新State无led_controller")
+        else:
+            print("startup后新State已初始化led_controller")
         self.state.previous = previous
 
 
