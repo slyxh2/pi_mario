@@ -4,6 +4,7 @@ import pygame as pg
 from .. import setup, tools
 from .. import constants as c
 from .. components import info, mario
+from data.led.led_controller import LEDController
 
 
 class Menu(tools._State):
@@ -18,7 +19,7 @@ class Menu(tools._State):
                    c.LEVEL_STATE: None,
                    c.CAMERA_START_X: 0,
                    c.MARIO_DEAD: False}
-        self.startup(0.0, persist)
+        self.startup(0.0, persist, LEDController(num_leds=5))
 
     def startup(self, current_time, persist, led_controller):
         """Called every time the game's state becomes this one.  Initializes
