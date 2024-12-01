@@ -56,6 +56,10 @@ class Control(object):
         self.state.update(self.screen, self.keys, self.current_time, self.sensor_keys)
 
     def flip_state(self):
+        if not self.state.led_controller:
+            print("现State无led_controller")
+        else:
+            print("现State已初始化led_controller")
         previous, self.state_name, led_controller = self.state_name, self.state.next, self.state.led_controller
         print("进入flip_state函数了，目前state是：" + self.state_name + "下一个State是：" + self.state.next)
         persist = self.state.cleanup()
