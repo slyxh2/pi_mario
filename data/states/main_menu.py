@@ -19,6 +19,8 @@ class Menu(tools._State):
                    c.CAMERA_START_X: 0,
                    c.MARIO_DEAD: False}
         self.startup(0.0, persist)
+        self.reset_game_info()
+        self.done = True # skip the Menu choose stage
 
     def startup(self, current_time, persist):
         """Called every time the game's state becomes this one.  Initializes
