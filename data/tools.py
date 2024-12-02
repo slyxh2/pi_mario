@@ -134,8 +134,8 @@ class Control(object):
             self.event_loop()
             self.update()
             pg.display.update()
-            if self.sensor_keys[2] == True:
-                self.clear_jump()
+            # if self.sensor_keys[2] == True:
+            #     self.clear_jump()
             self.clock.tick(self.fps)
             if self.show_fps:
                 fps = self.clock.get_fps()

@@ -464,6 +464,7 @@ class Mario(pg.sprite.Sprite):
                     setup.SFX['big_jump'].play()
                 self.state = c.JUMP
                 self.y_vel = c.JUMP_VEL
+                print()
         else:
             self.state = c.STAND
 
@@ -566,8 +567,10 @@ class Mario(pg.sprite.Sprite):
                 self.state = c.JUMP
                 if self.x_vel > 4.5 or self.x_vel < -4.5:
                     self.y_vel = c.JUMP_VEL - .5
+                    print('1')
                 else:
                     self.y_vel = c.JUMP_VEL
+                    print('2')
 
 
         if keys[tools.keybinding['left']] or sensor_keys[tools.keybinding['sensor_left']]:
