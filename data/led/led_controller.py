@@ -4,7 +4,7 @@ import threading
 
 class LEDController:
     """LED Controller for low-level SPI communication with LED strips."""
-    def __init__(self, num_leds):
+    def __init__(self, num_leds, brightness):
         self.num_leds = num_leds
         self.spi = spidev.SpiDev()
         self.spi.open(0, 0)
