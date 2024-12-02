@@ -45,6 +45,10 @@ class LEDController:
             data = [int(value) & 0xFF for value in data]
             self.spi.xfer2(data)
             time.sleep(delay)
+    
+    def pattern_left_to_right_thread(self, red, green, blue, times=1, delay=0.2):
+        thread = threading.Thread(target=self.pattern_left_to_right, args=(red, green, blue, times, delay))
+        thread.start()
 
     def flash_all(self, red, green, blue, times=1, delay=0.2):
         for _ in range(times):
