@@ -10,8 +10,13 @@ class LEDController:
         self.spi.open(0, 0)
         self.spi.max_speed_hz = 6400000
         self.reset_frame = [0] * 50
+        self.brightness = max(0.0, min(brightness, 1.0))
 
     def rgb_to_spi_data(self, red, green, blue):
+        red = int(red * self.brightness)
+        green = int(green * self.brightness)
+        blue = int(blue * self.brightness)
+        
         spi_data = []
         for color in [green, red, blue]:
             for i in range(8):
@@ -20,6 +25,9 @@ class LEDController:
                 else:
                     spi_data.append(0b11000000)
         return [int(value) & 0xFF for value in spi_data]
+
+    def set_brightness(self, brightness):
+        self.brightness = max(0.0, min(brightness, 1.0))
 
     def set_led_strip_color(self, red, green, blue):
         data = []

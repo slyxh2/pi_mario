@@ -40,7 +40,7 @@ class Control(object):
         self.state_name = None
         self.state = None
         self.characteristic = None
-        self.led_controller = LEDController(num_leds=5)
+        self.led_controller = LEDController(num_leds=5, brightness=0.5)
 
     def setup_states(self, state_dict, start_state):
         self.state_dict = state_dict

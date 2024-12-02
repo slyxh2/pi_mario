@@ -19,7 +19,7 @@ class Menu(tools._State):
                    c.LEVEL_STATE: None,
                    c.CAMERA_START_X: 0,
                    c.MARIO_DEAD: False}
-        self.startup(0.0, persist, LEDController(num_leds=5))
+        self.startup(0.0, persist, LEDController(num_leds=5, brightness=0.5))
 
     def startup(self, current_time, persist, led_controller):
         """Called every time the game's state becomes this one.  Initializes
