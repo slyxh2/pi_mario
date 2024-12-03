@@ -40,6 +40,7 @@ class Level1(tools._State):
         self.sound_manager = game_sound.Sound(self.overhead_info_display)
         
         self.led_controller = led_controller
+        self.is_lit_active = False
 
         self.setup_background()
         self.setup_ground()
@@ -1326,6 +1327,9 @@ class Level1(tools._State):
             self.game_info[c.MARIO_DEAD] = True
 
         if self.mario.dead:
+            if not self.is_lit_active:
+                self.is_lit_active = True
+                self.led_controller.lit_thread(255, 0, 0, 1)
             self.play_death_song()
 
 
