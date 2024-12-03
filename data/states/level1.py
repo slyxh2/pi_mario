@@ -410,6 +410,7 @@ class Level1(tools._State):
         for score in self.moving_score_list:
             score.update(self.moving_score_list, self.game_info)
         if self.flag_score:
+            print("flag_score")
             self.flag_score.update(None, self.game_info)
             self.check_to_add_flag_score()
         self.flag_pole_group.update()
