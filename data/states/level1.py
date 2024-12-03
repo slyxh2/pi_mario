@@ -1366,6 +1366,7 @@ class Level1(tools._State):
                 and not self.mario.in_castle:
             self.state = c.FROZEN
             self.mario.start_death_jump(self.game_info)
+            self.led_controller.lit_thread(255, 0, 0, 1)
 
 
     def update_viewport(self):
