@@ -1328,6 +1328,7 @@ class Level1(tools._State):
         """Adds flag score if at top"""
         if self.flag_score.y_vel == 0:
             self.game_info[c.SCORE] += self.flag_score_total
+            print("flash add flag score")
             self.led_controller.flash_all_in_thread(0, 255, 0)
             self.flag_score_total = 0
 
