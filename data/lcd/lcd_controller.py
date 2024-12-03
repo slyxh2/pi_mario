@@ -3,7 +3,7 @@ import threading
 import time
 
 class LCDController:
-    def __init__(self, bus, address=0x3e):
+    def __init__(self, bus=1, address=0x3e):
         self.bus = bus
         self.address = address
         self.queue = queue.Queue()
