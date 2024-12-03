@@ -364,14 +364,12 @@ class Level1(tools._State):
         self.check_if_time_out()
         self.blit_everything(surface)
         self.sound_manager.update(self.game_info, self.mario)
-        self.update_lcd()
+        self.handle_score_update(self.game_info[c.SCORE], self.game_info[c.LIVES])
 
-    def update_lcd(self):
-        """Update LCD Display"""
-        score = self.game_info.get(c.SCORE, 0)
-        lives = self.game_info.get(c.LIVES, 3)
-
-        self.lcd_controller.update_thread(score, lives)
+    def handle_score_update(self, score, lives):
+        """Handle score and lives update."""
+        if hasattr(self, "lcd_controller"):
+            self.lcd_controller.update(score, lives)
 
     def handle_states(self, keys, sensor_keys):
         """If the level is in a FROZEN state, only mario will update"""
