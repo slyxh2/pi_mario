@@ -410,9 +410,6 @@ class Level1(tools._State):
         for score in self.moving_score_list:
             score.update(self.moving_score_list, self.game_info)
         if self.flag_score:
-            print("flag_score")
-            if not self.is_lit_active:
-                self.led_controller.lit_thread(255, 255, 255, 2)
             self.flag_score.update(None, self.game_info)
             self.check_to_add_flag_score()
         self.flag_pole_group.update()
@@ -1403,6 +1400,7 @@ class Level1(tools._State):
 
     def update_flag_and_fireworks(self):
         """Updates the level for the fireworks and castle flag"""
+        self.led_controller.lit_thread(255, 255, 255, 3)
         for score in self.moving_score_list:
             score.update(self.moving_score_list, self.game_info)
         self.overhead_info_display.update(self.game_info)
