@@ -41,7 +41,7 @@ class Level1(tools._State):
         
         self.led_controller = led_controller
         self.is_lit_active = False
-        self.lit_thread = None
+        self.lit_event = threading.Event()
 
         self.setup_background()
         self.setup_ground()
@@ -1327,17 +1327,17 @@ class Level1(tools._State):
             self.state = c.FROZEN
             self.game_info[c.MARIO_DEAD] = True
 
-            if not self.is_lit_active:
-                self.is_lit_active = True
-                self.lit_thread = threading.Thread(target=self.led_controller.lit, args=(255, 0, 0, 1))
-                self.lit_thread.start()
+            if not self.lit_event.is_set():
+                self.lit_event.set()
+                threading.Thread(target=self.run_lit_thread).start()
         
-        if self.lit_thread and not self.lit_thread.is_alive():
-            self.is_lit_active = False
-
         if self.mario.dead:
             self.play_death_song()
 
+    def run_lit_thread(self):
+        """运行 LED 点亮逻辑"""
+        self.led_controller.lit(255, 0, 0, 1)
+        self.lit_event.clear()
 
     def play_death_song(self):
         if self.death_timer == 0:
