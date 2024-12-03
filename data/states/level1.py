@@ -21,7 +21,7 @@ class Level1(tools._State):
     def __init__(self):
         tools._State.__init__(self)
 
-    def startup(self, current_time, persist, led_controller):
+    def startup(self, current_time, persist, led_controller, lcd_controller):
         """Called when the State object is created"""
         self.game_info = persist
         self.persist = self.game_info
@@ -42,6 +42,8 @@ class Level1(tools._State):
         self.led_controller = led_controller
         self.is_lit_active = False
         self.is_flash_active = False
+        
+        self.lcd_controller = lcd_controller
 
         self.setup_background()
         self.setup_ground()
