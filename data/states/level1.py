@@ -15,7 +15,7 @@ from .. components import flagpole
 from .. components import info
 from .. components import score
 from .. components import castle_flag
-
+import threading
 
 class Level1(tools._State):
     def __init__(self):
@@ -41,6 +41,7 @@ class Level1(tools._State):
         
         self.led_controller = led_controller
         self.is_lit_active = False
+        self.lit_thread = None
 
         self.setup_background()
         self.setup_ground()
@@ -1326,11 +1327,15 @@ class Level1(tools._State):
             self.state = c.FROZEN
             self.game_info[c.MARIO_DEAD] = True
 
-        if self.mario.dead:
             if not self.is_lit_active:
                 self.is_lit_active = True
-                self.led_controller.lit_thread(255, 0, 0, 1)
-                self.is_lit_active = False
+                self.lit_thread = threading.Thread(target=self.led_controller.lit, args=(255, 0, 0, 1))
+                self.lit_thread.start()
+        
+        if self.lit_thread and not self.lit_thread.is_alive():
+            self.is_lit_active = False
+
+        if self.mario.dead:
             self.play_death_song()
 
 
