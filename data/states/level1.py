@@ -1383,8 +1383,6 @@ class Level1(tools._State):
             self.next = c.MAIN_MENU
             self.game_info[c.CAMERA_START_X] = 0
         elif self.overhead_info_display.time == 0:
-            if hasattr(self, "lcd_controller"):
-                self.lcd_controller.display_immediately(self.game_info[c.SCORE], self.persist[c.LIVES])
             self.next = c.TIME_OUT
         else:
             if self.mario.rect.x > 3670 \
@@ -1428,6 +1426,8 @@ class Level1(tools._State):
         if self.overhead_info_display.state == c.END_OF_LEVEL:
             self.state = c.FLAG_AND_FIREWORKS
             self.flag_pole_group.add(castle_flag.Flag(8745, 322))
+            if hasattr(self, "lcd_controller"):
+                self.lcd_controller.display_immediately(self.game_info[c.SCORE], self.persist[c.LIVES])
 
 
     def update_flag_and_fireworks(self):
