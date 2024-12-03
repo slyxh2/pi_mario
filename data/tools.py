@@ -56,8 +56,10 @@ class Control(object):
         self.state.update(self.screen, self.keys, self.current_time, self.sensor_keys)
 
     def flip_state(self):
+        id_prev_controller = 0
         if not self.state.led_controller:
             print("现State无led_controller")
+            id_prev_controller = id(self.state.led_controller)
         else:
             print("现State已初始化led_controller")
         previous, self.state_name, led_controller = self.state_name, self.state.next, self.state.led_controller
@@ -67,6 +69,8 @@ class Control(object):
         self.state.startup(self.current_time, persist, led_controller)
         if not self.state.led_controller:
             print("新State无led_controller")
+            if id(self.state.led_controller) != id_prev_controller:
+                print("未迁移：新State的led_controller")
         else:
             print("新State已初始化led_controller")
         self.state.previous = previous
