@@ -369,7 +369,11 @@ class Level1(tools._State):
     def handle_score_update(self, score, lives):
         """Handle score and lives update."""
         if hasattr(self, "lcd_controller"):
-            self.lcd_controller.update(score, lives)
+            if (
+                self.lcd_controller.last_display["score"] != score
+                or self.lcd_controller.last_display["lives"] != lives
+            ):
+                self.lcd_controller.update(score, lives)
 
     def handle_states(self, keys, sensor_keys):
         """If the level is in a FROZEN state, only mario will update"""
