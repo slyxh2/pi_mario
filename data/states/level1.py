@@ -1415,6 +1415,7 @@ class Level1(tools._State):
         elif (self.current_time - self.flag_timer) > 2000:
             self.set_game_info_values()
             self.next = c.GAME_OVER
+            self.led_controller.lit_thead(255, 0, 0, 2)
             self.sound_manager.stop_music()
             self.done = True
 
