@@ -133,11 +133,8 @@ class Menu(tools._State):
 
         self.persist = self.game_info
 
-    def cleanup(self):
-        # 没用到
         if self.led_controller:
             self.led_controller.clear()
-            print("led cleaned up")
         return super().cleanup()
 
 

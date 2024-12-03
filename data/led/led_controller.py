@@ -70,13 +70,15 @@ class LEDController:
         thread = threading.Thread(target=self.flash_all, args=(red, green, blue, times, delay))
         thread.start()
     
-    def lit(self, red, green, blue, time):
+    def lit(self, red, green, blue, duration):
         self.set_led_strip_color(red, green, blue)
-        time.sleep(time)
+        time.sleep(duration)
+        print("Clearing")
         self.clear()
     
-    def lit_thread(self, red, green, blue, time):
-        thread = threading.Thread(target=self.lit, args=(red, green, blue, time))
+    def lit_thread(self, red, green, blue, duration):
+        thread = threading.Thread(target=self.lit, args=(red, green, blue, duration))
+        thread.daemon = True
         thread.start()
 
     def close(self):
