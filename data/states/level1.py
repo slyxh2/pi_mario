@@ -367,11 +367,11 @@ class Level1(tools._State):
         self.update_lcd()
 
     def update_lcd(self):
-        """更新 LCD 显示内容"""
+        """Update LCD Display"""
         score = self.game_info.get(c.SCORE, 0)
         lives = self.game_info.get(c.LIVES, 3)
 
-        self.lcd_controller.update(score, lives)
+        self.lcd_controller.update_thread(score, lives)
 
     def handle_states(self, keys, sensor_keys):
         """If the level is in a FROZEN state, only mario will update"""

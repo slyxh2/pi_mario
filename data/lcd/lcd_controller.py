@@ -1,5 +1,6 @@
 import smbus
 import time
+import threading
 
 class LCDController:
     """Controller for Grove 16x2 LCD (White on Blue)"""
@@ -60,3 +61,7 @@ class LCDController:
         self.write(f"Score: {score}")
         self.set_cursor(1, 0)
         self.write(f"Lives: {lives}")
+    
+    def update_thread(self, score, lives):
+        thread = threading.Thread(target=self.update, args=(score, lives))
+        thread.start()
