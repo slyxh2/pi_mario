@@ -7,7 +7,7 @@ class LCDController:
         self.bus = smbus.SMBus(bus)
         self.address = address
         self.init_lcd()
-        self.last_display = {"score": None, "coins": None, "lives": None}  # Record previous display content
+        self.last_display = {"score": None, "lives": None}  # Record previous display content
 
     def init_lcd(self):
         """Initialize the LCD."""
@@ -42,23 +42,21 @@ class LCDController:
         addr = 0x80 + (0x40 * line + col)
         self.command(addr)
 
-    def update(self, score, coins, lives):
+    def update(self, score, lives):
         """
         Update the LCD display if the values have changed.
         :param score: Current score
-        :param coins: Number of coins
         :param lives: Remaining lives
         """
         if (
             self.last_display["score"] == score
-            and self.last_display["coins"] == coins
             and self.last_display["lives"] == lives
         ):
             return  # If nothing changed, no need to refresh
 
-        self.last_display = {"score": score, "coins": coins, "lives": lives}
+        self.last_display = {"score": score, "lives": lives}
         self.clear()
         self.set_cursor(0, 0)
         self.write(f"Score: {score}")
         self.set_cursor(1, 0)
-        self.write(f"Coins: {coins} Lives: {lives}")
+        self.write(f"Lives: {lives}")
