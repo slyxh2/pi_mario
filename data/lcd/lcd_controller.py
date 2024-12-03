@@ -25,18 +25,18 @@ class LCDController:
     def command(self, cmd):
         """Send a command to the LCD."""
         self.bus.write_byte_data(self.address, 0x80, cmd)
-        time.sleep(0.01)
+        time.sleep(0.05)
 
     def write(self, text):
         """Write text to the LCD."""
         for char in text:
             self.bus.write_byte_data(self.address, 0x40, ord(char))
-            time.sleep(0.01)
+            time.sleep(0.05)
 
     def clear(self):
         """Clear the LCD display."""
         self.command(0x01)
-        time.sleep(0.01)
+        time.sleep(0.1)
 
     def set_cursor(self, line, col):
         """Set the cursor position."""
