@@ -1392,9 +1392,9 @@ class Level1(tools._State):
         self.led_controller.lit_thread(255, 255, 255, 3)
         for score in self.moving_score_list:
             score.update(self.moving_score_list, self.game_info)
-        self.overhead_info_display.update(self.game_info)
 
         if self.overhead_info_display.state == c.END_OF_LEVEL:
+            self.overhead_info_display.update(self.game_info)
             self.state = c.FLAG_AND_FIREWORKS
             self.flag_pole_group.add(castle_flag.Flag(8745, 322))
 
