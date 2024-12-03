@@ -69,6 +69,14 @@ class LEDController:
     def flash_all_in_thread(self, red, green, blue, times=1, delay=0.2):
         thread = threading.Thread(target=self.flash_all, args=(red, green, blue, times, delay))
         thread.start()
+    
+    def lit(self, red, green, blue, time):
+        self.set_led_strip_color(red, green, blue)
+        time.sleep(time)
+        self.clear()
+    
+    def lit_thread(self, red, green, blue, time):
+        thread = threading.Thread(target=self.lit, args=(red, green, blue, time))
 
     def close(self):
         self.spi.close()
