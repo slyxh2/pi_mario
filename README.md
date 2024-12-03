@@ -5,4 +5,4 @@ Number of LED light used: 5
 2. Score: all flash - yellow, 0.2s
 3. Die during game: all lit - red, 1s
 4. Lives running out/Timed out: all lit - red, 2s
-4. Success: all lit - white, 3s
+4. Success: all lit when entering castle - white, 3s
