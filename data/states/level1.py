@@ -1350,6 +1350,7 @@ class Level1(tools._State):
             self.persist[c.LIVES] -= 1
 
         if self.persist[c.LIVES] == 0:
+            self.led_controller.lit_thead(255, 0, 0, 2)
             self.next = c.GAME_OVER
             self.game_info[c.CAMERA_START_X] = 0
         elif self.mario.dead == False:
@@ -1415,6 +1416,7 @@ class Level1(tools._State):
         elif (self.current_time - self.flag_timer) > 2000:
             self.set_game_info_values()
             self.next = c.GAME_OVER
+            print("enter end")
             self.led_controller.lit_thead(255, 0, 0, 2)
             self.sound_manager.stop_music()
             self.done = True
