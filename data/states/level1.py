@@ -1340,7 +1340,6 @@ class Level1(tools._State):
         if self.flag_score.y_vel == 0:
             self.game_info[c.SCORE] += self.flag_score_total
             if not self.is_flash_active:
-                print("flash add flag score")
                 self.is_flash_active = True
                 self.led_controller.flash_all_in_thread(0, 255, 0)
             self.flag_score_total = 0
@@ -1384,6 +1383,8 @@ class Level1(tools._State):
             self.next = c.MAIN_MENU
             self.game_info[c.CAMERA_START_X] = 0
         elif self.overhead_info_display.time == 0:
+            if hasattr(self, "lcd_controller"):
+                self.lcd_controller.display_immediately(self.game_info[c.SCORE], self.persist[c.LIVES])
             self.next = c.TIME_OUT
         else:
             if self.mario.rect.x > 3670 \

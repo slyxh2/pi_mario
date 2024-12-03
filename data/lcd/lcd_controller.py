@@ -71,9 +71,19 @@ class LCDController:
                 self.queue.task_done()
             except queue.Empty:
                 continue
-
-
     
-    def update_thread(self, score, lives):
-        thread = threading.Thread(target=self.update, args=(score, lives))
-        thread.start()
+    def clear_queue(self):
+        """Clear all pending updates in the queue."""
+        with self.queue.mutex:
+            self.queue.queue.clear()
+
+    def display_immediately(self, score, lives):
+        """
+        Immediately update the display with the final score and lives, bypassing the queue.
+        """
+        self.clear_queue()
+        self.clear()
+        self.set_cursor(0, 0)
+        self.write(f"Score: {score}")
+        self.set_cursor(1, 0)
+        self.write(f"Lives: {lives}")
