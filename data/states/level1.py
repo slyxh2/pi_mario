@@ -41,6 +41,7 @@ class Level1(tools._State):
         
         self.led_controller = led_controller
         self.is_lit_active = False
+        self.is_flash_active = False
 
         self.setup_background()
         self.setup_ground()
@@ -1328,8 +1329,10 @@ class Level1(tools._State):
         """Adds flag score if at top"""
         if self.flag_score.y_vel == 0:
             self.game_info[c.SCORE] += self.flag_score_total
-            print("flash add flag score")
-            self.led_controller.flash_all_in_thread(0, 255, 0)
+            if not self.is_flash_active:
+                print("flash add flag score")
+                self.is_flash_active = True
+                self.led_controller.flash_all_in_thread(0, 255, 0)
             self.flag_score_total = 0
 
 
