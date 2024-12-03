@@ -1330,6 +1330,7 @@ class Level1(tools._State):
             if not self.is_lit_active:
                 self.is_lit_active = True
                 self.led_controller.lit_thread(255, 0, 0, 1)
+                self.is_lit_active = False
             self.play_death_song()
 
 
