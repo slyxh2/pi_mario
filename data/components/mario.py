@@ -697,6 +697,7 @@ class Mario(pg.sprite.Sprite):
         self.image = self.right_frames[self.frame_index]
         self.state = c.DEATH_JUMP
         self.in_transition_state = True
+        self.led_controller.lit_thread(255, 0, 0, 1)
 
 
     def changing_to_big(self):

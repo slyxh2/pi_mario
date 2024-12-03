@@ -1326,7 +1326,6 @@ class Level1(tools._State):
             self.game_info[c.MARIO_DEAD] = True
 
         if self.mario.dead:
-            self.led_controller.lit_thread(255, 0, 0, 1)
             self.play_death_song()
 
 
