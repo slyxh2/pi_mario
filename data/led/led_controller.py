@@ -77,6 +77,7 @@ class LEDController:
     
     def lit_thread(self, red, green, blue, time):
         thread = threading.Thread(target=self.lit, args=(red, green, blue, time))
+        thread.start()
 
     def close(self):
         self.spi.close()
