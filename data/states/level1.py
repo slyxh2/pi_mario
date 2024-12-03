@@ -1389,14 +1389,14 @@ class Level1(tools._State):
 
     def update_while_in_castle(self):
         """Updates while Mario is in castle at the end of the level"""
+        if not self.is_lit_active:
+            self.is_lit_active = True
+            self.led_controller.lit_thread(255, 255, 255, 3)
         for score in self.moving_score_list:
             score.update(self.moving_score_list, self.game_info)
         self.overhead_info_display.update(self.game_info)
 
         if self.overhead_info_display.state == c.END_OF_LEVEL:
-            if not self.is_lit_active:
-                self.is_lit_active = True
-                self.led_controller.lit_thread(255, 255, 255, 3)
             self.state = c.FLAG_AND_FIREWORKS
             self.flag_pole_group.add(castle_flag.Flag(8745, 322))
 
