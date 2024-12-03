@@ -1389,6 +1389,7 @@ class Level1(tools._State):
 
     def update_while_in_castle(self):
         """Updates while Mario is in castle at the end of the level"""
+        self.led_controller.lit_thread(255, 255, 255, 3)
         for score in self.moving_score_list:
             score.update(self.moving_score_list, self.game_info)
         self.overhead_info_display.update(self.game_info)
@@ -1400,7 +1401,6 @@ class Level1(tools._State):
 
     def update_flag_and_fireworks(self):
         """Updates the level for the fireworks and castle flag"""
-        self.led_controller.lit_thread(255, 255, 255, 3)
         for score in self.moving_score_list:
             score.update(self.moving_score_list, self.game_info)
         self.overhead_info_display.update(self.game_info)
