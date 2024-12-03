@@ -73,7 +73,6 @@ class LEDController:
     def lit(self, red, green, blue, duration):
         self.set_led_strip_color(red, green, blue)
         time.sleep(duration)
-        print("Clearing")
         self.clear()
     
     def lit_thread(self, red, green, blue, duration):
