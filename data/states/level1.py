@@ -411,6 +411,8 @@ class Level1(tools._State):
             score.update(self.moving_score_list, self.game_info)
         if self.flag_score:
             print("flag_score")
+            if not self.is_lit_active:
+                self.led_controller.lit_thread(255, 255, 255, 2)
             self.flag_score.update(None, self.game_info)
             self.check_to_add_flag_score()
         self.flag_pole_group.update()
@@ -1416,8 +1418,6 @@ class Level1(tools._State):
         elif (self.current_time - self.flag_timer) > 2000:
             self.set_game_info_values()
             self.next = c.GAME_OVER
-            print("enter end")
-            self.led_controller.lit_thread(255, 0, 0, 2)
             self.sound_manager.stop_music()
             self.done = True
 
