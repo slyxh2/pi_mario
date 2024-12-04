@@ -94,7 +94,7 @@ class Menu(tools._State):
 
     def update(self, surface, keys, current_time, sensor_keys):
         """Updates the state every refresh"""
-        self.lcd_controller.display_message("Welcome!", "", 3)
+        self.lcd_controller.keep_display_message("Welcome!", "")
         self.current_time = current_time
         self.game_info[c.CURRENT_TIME] = self.current_time
         self.update_cursor(keys)
