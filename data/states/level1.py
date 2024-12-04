@@ -366,11 +366,11 @@ class Level1(tools._State):
         self.blit_everything(surface)
         self.sound_manager.update(self.game_info, self.mario)
         if self.overhead_info_display.state != c.FAST_COUNT_DOWN or self.overhead_info_display.time <= 0:
+            self.handle_score_update(self.game_info[c.SCORE], self.game_info[c.LIVES])
+        else:
             if not self.welcomed:
                 self.welcomed = True
-                self.handle_score_update(self.game_info[c.SCORE], self.game_info[c.LIVES])
-        else:
-            self.lcd_controller.keep_display_message("Calculating...")
+                self.lcd_controller.keep_display_message("Calculating...")
 
     def handle_score_update(self, score, lives):
         """Handle score and lives update."""
