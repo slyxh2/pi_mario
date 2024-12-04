@@ -7,6 +7,8 @@ import random
 import time
 from bluepy.btle import Peripheral, UUID
 import struct
+from data.led.led_controller import LEDController
+from data.lcd.lcd_controller import LCDController
 
 PICO_MAC_ADDRESS = "2C:CF:67:07:40:6B"  # Replace with your Pico's MAC address
 
@@ -42,9 +44,10 @@ class Control(object):
         self.state_name = None
         self.state = None
         self.characteristic = None
+        self.led_controller = LEDController(num_leds=5, brightness=0.5)
+        self.lcd_controller = LCDController()
         self.motionSensorCharacter = None
         
-
     def setup_states(self, state_dict, start_state):
         self.state_dict = state_dict
         self.state_name = start_state
@@ -59,10 +62,10 @@ class Control(object):
         self.state.update(self.screen, self.keys, self.current_time, self.sensor_keys)
 
     def flip_state(self):
-        previous, self.state_name = self.state_name, self.state.next
+        previous, self.state_name, led_controller, lcd_controller = self.state_name, self.state.next, self.state.led_controller, self.state.lcd_controller
         persist = self.state.cleanup()
         self.state = self.state_dict[self.state_name]
-        self.state.startup(self.current_time, persist)
+        self.state.startup(self.current_time, persist, led_controller, lcd_controller)
         self.state.previous = previous
 
 
@@ -128,7 +131,13 @@ class Control(object):
 
 
     def main(self):
-        # self.connect_imu_sensor()
+        self.connect_imu_sensor()
+        
+        # LED strip flashes gradually lights up from left to right, then clear
+        if self.led_controller:
+            self.led_controller.pattern_left_to_right_thread(255, 255, 255, delay=0.5)
+            self.led_controller.clear()
+
         """Main loop for entire program"""
         while not self.done:
             self.event_loop()
@@ -166,13 +175,17 @@ class _State(object):
         self.next = None
         self.previous = None
         self.persist = {}
+        self.led_controller = None
+        self.lcd_controller = None
 
     def get_event(self, event):
         pass
 
-    def startup(self, current_time, persistant):
+    def startup(self, current_time, persistant, led_controller, lcd_controller):
         self.persist = persistant
         self.start_time = current_time
+        self.led_controller = led_controller
+        self.lcd_controller = lcd_controller
 
     def cleanup(self):
         self.done = False
@@ -218,15 +231,3 @@ def load_all_sfx(directory, accept=('.wav','.mpe','.ogg','.mdi')):
         if ext.lower() in accept:
             effects[name] = pg.mixer.Sound(os.path.join(directory, fx))
     return effects
-
-
-
-
-
-
-
-
-
-
-
-

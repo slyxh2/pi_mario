@@ -21,7 +21,7 @@ class Level1(tools._State):
     def __init__(self):
         tools._State.__init__(self)
 
-    def startup(self, current_time, persist):
+    def startup(self, current_time, persist, led_controller, lcd_controller):
         """Called when the State object is created"""
         self.game_info = persist
         self.persist = self.game_info
@@ -38,6 +38,13 @@ class Level1(tools._State):
         self.moving_score_list = []
         self.overhead_info_display = info.OverheadInfo(self.game_info, c.LEVEL)
         self.sound_manager = game_sound.Sound(self.overhead_info_display)
+        
+        self.led_controller = led_controller
+        self.is_lit_active = False
+        self.is_flash_active = False
+        
+        self.lcd_controller = lcd_controller
+        self.welcomed = False
 
         self.setup_background()
         self.setup_ground()
@@ -374,8 +381,21 @@ class Level1(tools._State):
         self.check_if_time_out()
         self.blit_everything(surface)
         self.sound_manager.update(self.game_info, self.mario)
+        if self.overhead_info_display.state != c.FAST_COUNT_DOWN or self.overhead_info_display.time <= 0:
+            self.handle_score_update(self.game_info[c.SCORE], self.game_info[c.LIVES])
+        else:
+            if not self.welcomed:
+                self.welcomed = True
+                self.lcd_controller.keep_display_message("Calculating...")
 
-
+    def handle_score_update(self, score, lives):
+        """Handle score and lives update."""
+        if hasattr(self, "lcd_controller"):
+            if (
+                self.lcd_controller.last_display["score"] != score
+                or self.lcd_controller.last_display["lives"] != lives
+            ):
+                self.lcd_controller.update(score, lives)
 
     def handle_states(self, keys, sensor_keys):
         """If the level is in a FROZEN state, only mario will update"""
@@ -470,6 +490,7 @@ class Level1(tools._State):
                 self.mario.kill()
                 self.mario.state == c.STAND
                 self.mario.in_castle = True
+                self.lcd_controller.display_message("Congratulations", "You Win!")
                 self.overhead_info_display.state = c.FAST_COUNT_DOWN
 
 
@@ -557,6 +578,7 @@ class Level1(tools._State):
             if self.mario.invincible:
                 setup.SFX['kick'].play()
                 self.game_info[c.SCORE] += 100
+                self.led_controller.flash_all_in_thread(0, 255, 0)
                 self.moving_score_list.append(
                     score.Score(self.mario.rect.right - self.viewport.x,
                                 self.mario.rect.y, 100))
@@ -581,6 +603,7 @@ class Level1(tools._State):
         elif powerup:
             if powerup.name == c.STAR:
                 self.game_info[c.SCORE] += 1000
+                self.led_controller.flash_all_in_thread(0, 255, 0)
 
                 self.moving_score_list.append(
                     score.Score(self.mario.rect.centerx - self.viewport.x,
@@ -590,6 +613,7 @@ class Level1(tools._State):
             elif powerup.name == c.MUSHROOM:
                 setup.SFX['powerup'].play()
                 self.game_info[c.SCORE] += 1000
+                self.led_controller.flash_all_in_thread(0, 255, 0)
                 self.moving_score_list.append(
                     score.Score(self.mario.rect.centerx - self.viewport.x,
                                 self.mario.rect.y - 20, 1000))
@@ -609,6 +633,7 @@ class Level1(tools._State):
             elif powerup.name == c.FIREFLOWER:
                 setup.SFX['powerup'].play()
                 self.game_info[c.SCORE] += 1000
+                self.led_controller.flash_all_in_thread(0, 255, 0)
                 self.moving_score_list.append(
                     score.Score(self.mario.rect.centerx - self.viewport.x,
                                 self.mario.rect.y, 1000))
@@ -662,6 +687,7 @@ class Level1(tools._State):
         if shell.state == c.JUMPED_ON:
             if self.mario.rect.x < shell.rect.x:
                 self.game_info[c.SCORE] += 400
+                self.led_controller.flash_all_in_thread(0, 255, 0)
                 self.moving_score_list.append(
                     score.Score(shell.rect.centerx - self.viewport.x,
                                 shell.rect.y,
@@ -684,6 +710,7 @@ class Level1(tools._State):
                 self.mario.state = c.BIG_TO_SMALL
             elif self.mario.invincible:
                 self.game_info[c.SCORE] += 200
+                self.led_controller.flash_all_in_thread(0, 255, 0)
                 self.moving_score_list.append(
                     score.Score(shell.rect.right - self.viewport.x,
                                 shell.rect.y, 200))
@@ -765,6 +792,7 @@ class Level1(tools._State):
                     coin_box.start_bump(self.moving_score_list)
                     if coin_box.contents == c.COIN:
                         self.game_info[c.COIN_TOTAL] += 1
+                        self.led_controller.flash_all_in_thread(255, 255, 0)
                 else:
                     coin_box.start_bump(self.moving_score_list)
 
@@ -806,6 +834,7 @@ class Level1(tools._State):
                     if brick.coin_total > 0:
                         self.game_info[c.COIN_TOTAL] += 1
                         self.game_info[c.SCORE] += 200
+                        self.led_controller.flash_all_in_thread(255, 255, 0)
                     self.check_if_enemy_on_brick(brick)
                     brick.start_bump(self.moving_score_list)
             elif brick.state == c.OPENED:
@@ -829,6 +858,7 @@ class Level1(tools._State):
         if enemy:
             setup.SFX['kick'].play()
             self.game_info[c.SCORE] += 100
+            self.led_controller.flash_all_in_thread(0, 255, 0)
             self.moving_score_list.append(
                 score.Score(enemy.rect.centerx - self.viewport.x,
                             enemy.rect.y,
@@ -890,6 +920,7 @@ class Level1(tools._State):
         if self.mario.y_vel > 0:
             setup.SFX['stomp'].play()
             self.game_info[c.SCORE] += 100
+            self.led_controller.flash_all_in_thread(0, 255, 0)
             self.moving_score_list.append(
                 score.Score(enemy.rect.centerx - self.viewport.x,
                             enemy.rect.y, 100))
@@ -911,6 +942,7 @@ class Level1(tools._State):
         """Mario collisions with Koopas in their shells on the y axis"""
         if self.mario.y_vel > 0:
             self.game_info[c.SCORE] += 400
+            self.led_controller.flash_all_in_thread(0, 255, 0)
             self.moving_score_list.append(
                 score.Score(self.mario.rect.centerx - self.viewport.x,
                             self.mario.rect.y, 400))
@@ -1013,6 +1045,7 @@ class Level1(tools._State):
         elif coin_box:
             if coin_box.state == c.BUMPED:
                 self.game_info[c.SCORE] += 100
+                self.led_controller.flash_all_in_thread(0, 255, 0)
                 self.moving_score_list.append(
                     score.Score(enemy.rect.centerx - self.viewport.x,
                                 enemy.rect.y, 100))
@@ -1074,6 +1107,7 @@ class Level1(tools._State):
         if enemy:
             setup.SFX['kick'].play()
             self.game_info[c.SCORE] += 100
+            self.led_controller.flash_all_in_thread(0, 255, 0)
             self.moving_score_list.append(
                 score.Score(enemy.rect.right - self.viewport.x,
                             enemy.rect.y, 100))
@@ -1281,6 +1315,7 @@ class Level1(tools._State):
         """Kills enemy if hit with fireball"""
         setup.SFX['kick'].play()
         self.game_info[c.SCORE] += 100
+        self.led_controller.flash_all_in_thread(0, 255, 0)
         self.moving_score_list.append(
             score.Score(enemy.rect.centerx - self.viewport.x,
                         enemy.rect.y,100))
@@ -1327,6 +1362,9 @@ class Level1(tools._State):
         """Adds flag score if at top"""
         if self.flag_score.y_vel == 0:
             self.game_info[c.SCORE] += self.flag_score_total
+            if not self.is_flash_active:
+                self.is_flash_active = True
+                self.led_controller.flash_all_in_thread(0, 255, 0)
             self.flag_score_total = 0
 
 
@@ -1339,6 +1377,9 @@ class Level1(tools._State):
             self.game_info[c.MARIO_DEAD] = True
 
         if self.mario.dead:
+            if not self.is_lit_active:
+                self.is_lit_active = True
+                self.led_controller.lit_thread(255, 0, 0, 1)
             self.play_death_song()
 
 
@@ -1358,6 +1399,8 @@ class Level1(tools._State):
             self.persist[c.LIVES] -= 1
 
         if self.persist[c.LIVES] == 0:
+            self.led_controller.lit_thread(255, 0, 0, 2)
+            self.lcd_controller.display_message("No lives left", "Game Over!")
             self.next = c.GAME_OVER
             self.game_info[c.CAMERA_START_X] = 0
         elif self.mario.dead == False:
@@ -1379,6 +1422,8 @@ class Level1(tools._State):
                 and not self.mario.in_castle:
             self.state = c.FROZEN
             self.mario.start_death_jump(self.game_info)
+            self.led_controller.lit_thread(255, 0, 0, 2)
+            self.lcd_controller.display_message("Timed Out", "Try Again!")
 
 
     def update_viewport(self):
@@ -1396,6 +1441,9 @@ class Level1(tools._State):
 
     def update_while_in_castle(self):
         """Updates while Mario is in castle at the end of the level"""
+        if not self.is_lit_active:
+            self.is_lit_active = True
+            self.led_controller.lit_thread(255, 255, 255, 3)
         for score in self.moving_score_list:
             score.update(self.moving_score_list, self.game_info)
         self.overhead_info_display.update(self.game_info)
@@ -1403,6 +1451,8 @@ class Level1(tools._State):
         if self.overhead_info_display.state == c.END_OF_LEVEL:
             self.state = c.FLAG_AND_FIREWORKS
             self.flag_pole_group.add(castle_flag.Flag(8745, 322))
+            if hasattr(self, "lcd_controller"):
+                self.lcd_controller.display_immediately(self.game_info[c.SCORE], self.persist[c.LIVES])
 
 
     def update_flag_and_fireworks(self):
