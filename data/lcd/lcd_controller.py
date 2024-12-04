@@ -88,7 +88,7 @@ class LCDController:
         self.set_cursor(1, 0)
         self.write(f"Lives: {lives}")
     
-    def display_message(self, line1, line2=""):
+    def display_message(self, line1, line2="", duration=1):
         """
         Display a custom message on the LCD.
         :param line1: Text for the first line.
@@ -101,3 +101,5 @@ class LCDController:
         if line2:
             self.set_cursor(1, 0)
             self.write(line2[:16])
+        time.sleep(duration)
+        self.clear()
