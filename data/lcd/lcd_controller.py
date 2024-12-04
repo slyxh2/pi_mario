@@ -87,3 +87,17 @@ class LCDController:
         self.write(f"Score: {score}")
         self.set_cursor(1, 0)
         self.write(f"Lives: {lives}")
+    
+    def display_message(self, line1, line2=""):
+        """
+        Display a custom message on the LCD.
+        :param line1: Text for the first line.
+        :param line2: Text for the second line (optional).
+        """
+        self.clear_queue()
+        self.clear()
+        self.set_cursor(0, 0)
+        self.write(line1[:16])  # LCD is typically 16 characters wide
+        if line2:
+            self.set_cursor(1, 0)
+            self.write(line2[:16])
