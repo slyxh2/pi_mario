@@ -116,7 +116,7 @@ class Control(object):
             self.led_controller.pattern_left_to_right_thread(255, 255, 255, delay=0.5)
             self.led_controller.clear()
         
-        self.lcd_controller.display_message("Welcome!")
+        self.lcd_controller.display_message("Welcome!", "", 3)
         
         """Main loop for entire program"""
         while not self.done:
