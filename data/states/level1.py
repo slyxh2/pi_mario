@@ -461,13 +461,13 @@ class Level1(tools._State):
                     self.enemy_group.add(self.enemy_group_list[i-1])
 
             if checkpoint.name == '11':
+                self.lcd_controller.display_message("Congratulation", "You Win!")
                 self.mario.state = c.FLAGPOLE
                 self.mario.invincible = False
                 self.mario.flag_pole_right = checkpoint.rect.right
                 if self.mario.rect.bottom < self.flag.rect.y:
                     self.mario.rect.bottom = self.flag.rect.y
                 self.flag.state = c.SLIDE_DOWN
-                self.lcd_controller.display_message("Congratulation", "You Win!")
                 self.create_flag_points()
 
             elif checkpoint.name == '12':
