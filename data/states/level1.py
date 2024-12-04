@@ -461,7 +461,6 @@ class Level1(tools._State):
                     self.enemy_group.add(self.enemy_group_list[i-1])
 
             if checkpoint.name == '11':
-                self.lcd_controller.display_message("Congratulation", "You Win!")
                 self.mario.state = c.FLAGPOLE
                 self.mario.invincible = False
                 self.mario.flag_pole_right = checkpoint.rect.right
@@ -475,6 +474,7 @@ class Level1(tools._State):
                 self.mario.kill()
                 self.mario.state == c.STAND
                 self.mario.in_castle = True
+                self.lcd_controller.display_message("Congratulations", "You Win!")
                 self.overhead_info_display.state = c.FAST_COUNT_DOWN
 
 
@@ -1407,7 +1407,7 @@ class Level1(tools._State):
             self.state = c.FROZEN
             self.mario.start_death_jump(self.game_info)
             self.led_controller.lit_thread(255, 0, 0, 2)
-            self.lcd_controller.display_message("Timed out", "See you next time!")
+            self.lcd_controller.display_message("Timed Out", "Try Again!")
 
 
     def update_viewport(self):

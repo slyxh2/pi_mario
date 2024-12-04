@@ -4,12 +4,12 @@ import threading
 import time
 
 class LCDController:
-    def __init__(self, bus=None, address=0x3e):
+    def __init__(self, bus=None, address=0x3e): # Please double check address
         """
         :param bus: SMBus instance (e.g., smbus.SMBus(1))
         :param address: I2C address of the LCD (default: 0x3e)
         """
-        self.bus = bus if bus else smbus.SMBus(1)  # 默认使用 SMBus(1)
+        self.bus = bus if bus else smbus.SMBus(1)  # Default: SMBus(1)
         self.address = address
         self.queue = queue.Queue()
         self.last_display = {"score": -1, "lives": -1}

@@ -1,2 +1,3 @@
 pygame==1.9.1release
 spidev==3.5
+smbus2
