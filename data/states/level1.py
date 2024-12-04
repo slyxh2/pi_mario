@@ -467,6 +467,7 @@ class Level1(tools._State):
                 if self.mario.rect.bottom < self.flag.rect.y:
                     self.mario.rect.bottom = self.flag.rect.y
                 self.flag.state = c.SLIDE_DOWN
+                self.lcd_controller.display_message("Congratulation", "You Win!")
                 self.create_flag_points()
 
             elif checkpoint.name == '12':
@@ -474,7 +475,6 @@ class Level1(tools._State):
                 self.mario.kill()
                 self.mario.state == c.STAND
                 self.mario.in_castle = True
-                self.lcd_controller.display_message("Congratulation", "You Win!")
                 self.overhead_info_display.state = c.FAST_COUNT_DOWN
 
 
