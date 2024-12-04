@@ -21,6 +21,7 @@ class Menu(tools._State):
                    c.CAMERA_START_X: 0,
                    c.MARIO_DEAD: False}
         self.startup(0.0, persist, LEDController(num_leds=5, brightness=0.5), LCDController())
+        self.display_welcome = False
 
     def startup(self, current_time, persist, led_controller, lcd_controller):
         """Called every time the game's state becomes this one.  Initializes
@@ -94,7 +95,9 @@ class Menu(tools._State):
 
     def update(self, surface, keys, current_time, sensor_keys):
         """Updates the state every refresh"""
-        self.lcd_controller.keep_display_message("Welcome!", "")
+        if not self.display_welcome:
+            self.display_welcome = True
+            self.lcd_controller.keep_display_message("Welcome!", "")
         self.current_time = current_time
         self.game_info[c.CURRENT_TIME] = self.current_time
         self.update_cursor(keys)
