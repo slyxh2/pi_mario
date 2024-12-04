@@ -1,4 +1,5 @@
 import time
+import gpiod
 from bluepy.btle import Peripheral, UUID
 import struct
 
@@ -11,10 +12,13 @@ MOTION_CHAR_UUID = "00002A5B-0000-1000-8000-00805F9B34FB"
 ENV_UUID = "0000181A-0000-1000-8000-00805f9b34fb"
 MOTION_ENV_UUID = "0000180A-0000-1000-8000-00805f9b34fb"
 
+
+
 class SensorFactory(object):
     # handle connect and read data from sensor in pi
-    def __init__(self, Control):
+    def __init__(self, Control, Level1):
         self.Control = Control
+        self.Level1 = Level1
         self.characteristic = None
         self.motionSensorCharacter = None
         self.jumpFlag = False
@@ -63,7 +67,7 @@ class SensorFactory(object):
             print("Connecting to Motion Sensor...")
             # Connect to the peripheral device)
             print("Motion Sensor Connected!")
-
+            device = Peripheral(MOTION_MAC_ADDRESS)
             # Get the service and characteristic
             service = device.getServiceByUUID(UUID(MOTION_ENV_UUID))  # Environmental Sensing
             self.motionSensorCharacter = service.getCharacteristics(UUID(MOTION_CHAR_UUID))[0]
@@ -73,13 +77,10 @@ class SensorFactory(object):
     
     def detect_motion_sensor(self):
         self.connect_motion_sensor()
-        # time.sleep(1)
         while True:
             value = self.get_motion_sensor_value()
             if value == 1:
-                print("jump")
                 self.Control.handle_jump()
-                # time.sleep(0.75)
             else:
                 self.Control.clear_jump()
                 self.jumpFlag = False
@@ -92,3 +93,29 @@ class SensorFactory(object):
         motion_sensor_value = int.from_bytes(motion_sensor_value, 'little')
         
         return motion_sensor_value
+
+    # light sensor
+    def handle_light_sensor(self):
+        LED_PIN = 17
+        LIGHT_SENSOR_PIN = 16
+        chip = gpiod.Chip('gpiochip4')
+        led_line = chip.get_line(LED_PIN)
+        button_line = chip.get_line(LIGHT_SENSOR_PIN)
+        led_line.request(consumer="LED", type=gpiod.LINE_REQ_DIR_OUT)
+        button_line.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
+        try:
+            while True:
+                button_state = button_line.get_value()
+                print(button_state)
+                time.sleep(0.1)
+                if button_state == 0:
+                    self.Level1.setup_dark_background()
+                # else:
+                #     self.Level1.setup_dark_background()
+        finally:
+            led_line.release()
+
+
+        button_line.release()
+
+
