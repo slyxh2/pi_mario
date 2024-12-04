@@ -11,16 +11,19 @@ from data.led.led_controller import LEDController
 from data.lcd.lcd_controller import LCDController
 
 PICO_MAC_ADDRESS = "2C:CF:67:07:40:6B"  # Replace with your Pico's MAC address
+
 TEMP_CHAR_UUID = "00002A6E-0000-1000-8000-00805f9b34fb"
 
 keybinding = {
     'action':pg.K_s,
     'jump':pg.K_a,
     'left':pg.K_LEFT,
+    # 'left': 'L',
     'right':pg.K_RIGHT,
     'down':pg.K_DOWN,
     'sensor_left':0,
-    'sensor_right':1
+    'sensor_right':1,
+    'sensor_jump':2
 }
 
 class Control(object):
@@ -32,7 +35,7 @@ class Control(object):
         self.done = False
         self.clock = pg.time.Clock()
         self.caption = caption
-        self.fps = 120
+        self.fps = 60
         self.show_fps = False
         self.current_time = 0.0
         self.keys = pg.key.get_pressed()
@@ -43,7 +46,8 @@ class Control(object):
         self.characteristic = None
         self.led_controller = LEDController(num_leds=5, brightness=0.5)
         self.lcd_controller = LCDController()
-
+        self.motionSensorCharacter = None
+        
     def setup_states(self, state_dict, start_state):
         self.state_dict = state_dict
         self.state_name = start_state
@@ -66,8 +70,8 @@ class Control(object):
 
 
     def event_loop(self):
-        self.detect_imu_sensor()
-        
+        # self.detect_imu_sensor()
+        # keyboard listen event
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.done = True
@@ -77,10 +81,28 @@ class Control(object):
             elif event.type == pg.KEYUP:
                 self.keys = pg.key.get_pressed()
             self.state.get_event(event)
-            
+    
+    def handle_jump(self):
+        self.sensor_keys[2] = True
+    
+    def handle_move_left(self):
+        self.sensor_keys[0] = True
+        self.sensor_keys[1] = False
+    
+    def handle_move_right(self):
+        self.sensor_keys[0] = False
+        self.sensor_keys[1] = True
+
+    def clear_jump(self):
+        if self.sensor_keys[2] == False:
+            return
+        self.sensor_keys[2] = False
+
     def detect_imu_sensor(self):
         value = self.connect_and_read_temperature(PICO_MAC_ADDRESS)
-        self.sensor_keys = [False, False, False]
+        self.sensor_keys[0] = False
+        self.sensor_keys[1] = False
+
         if value == None:
             return
         
@@ -88,7 +110,7 @@ class Control(object):
             self.sensor_keys[1] = True
         elif value < -20:
             self.sensor_keys[0] = True
-            
+
     def connect_and_read_temperature(self, mac_address):
         if self.characteristic == None:
             return 0
@@ -100,7 +122,7 @@ class Control(object):
             temperature_value -= 65536
             
         return temperature_value
-
+    
     def toggle_show_fps(self, key):
         if key == pg.K_F5:
             self.show_fps = not self.show_fps
@@ -115,12 +137,14 @@ class Control(object):
         if self.led_controller:
             self.led_controller.pattern_left_to_right_thread(255, 255, 255, delay=0.5)
             self.led_controller.clear()
-        
+
         """Main loop for entire program"""
         while not self.done:
             self.event_loop()
             self.update()
             pg.display.update()
+            # if self.sensor_keys[2] == True:
+            #     self.clear_jump()
             self.clock.tick(self.fps)
             if self.show_fps:
                 fps = self.clock.get_fps()
@@ -137,13 +161,11 @@ class Control(object):
             # Get the service and characteristic
             service = device.getServiceByUUID(UUID("0000181A-0000-1000-8000-00805f9b34fb"))  # Environmental Sensing
             self.characteristic = service.getCharacteristics(UUID(TEMP_CHAR_UUID))[0]
-
-            # Disconnect
             
 
         except Exception as e:
             print(f"Error: {e}")
-
+    
 class _State(object):
     def __init__(self):
         self.start_time = 0.0

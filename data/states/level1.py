@@ -75,6 +75,22 @@ class Level1(tools._State):
         self.level_rect = self.level.get_rect()
         self.viewport = setup.SCREEN.get_rect(bottom=self.level_rect.bottom)
         self.viewport.x = self.game_info[c.CAMERA_START_X]
+    
+    def setup_dark_background(self):
+        self.background = setup.GFX['level_1_dark']
+        self.back_rect = self.background.get_rect()
+        self.background = pg.transform.scale(self.background,
+                                  (int(self.back_rect.width*c.BACKGROUND_MULTIPLER),
+                                  int(self.back_rect.height*c.BACKGROUND_MULTIPLER)))
+        # self.back_rect = self.background.get_rect()
+        # width = self.back_rect.width
+        # height = self.back_rect.height
+
+        # self.level = pg.Surface((width, height)).convert()
+        # self.level_rect = self.level.get_rect()
+        # self.viewport = setup.SCREEN.get_rect(bottom=self.level_rect.bottom)
+        # self.viewport.x = self.game_info[c.CAMERA_START_X]
+    
 
 
     def setup_ground(self):

@@ -22,7 +22,9 @@ class Menu(tools._State):
                    c.MARIO_DEAD: False}
         self.startup(0.0, persist, LEDController(num_leds=5, brightness=0.5), LCDController())
         self.display_welcome = False
-
+        self.reset_game_info()
+        self.done = False # skip the Menu choose stage
+      
     def startup(self, current_time, persist, led_controller, lcd_controller):
         """Called every time the game's state becomes this one.  Initializes
         certain values"""
