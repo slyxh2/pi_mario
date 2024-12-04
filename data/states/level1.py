@@ -44,6 +44,7 @@ class Level1(tools._State):
         self.is_flash_active = False
         
         self.lcd_controller = lcd_controller
+        self.welcomed = False
 
         self.setup_background()
         self.setup_ground()
@@ -365,7 +366,8 @@ class Level1(tools._State):
         self.blit_everything(surface)
         self.sound_manager.update(self.game_info, self.mario)
         if self.overhead_info_display.state != c.FAST_COUNT_DOWN or self.overhead_info_display.time <= 0:
-            self.handle_score_update(self.game_info[c.SCORE], self.game_info[c.LIVES])
+            if not self.welcomed:
+                self.handle_score_update(self.game_info[c.SCORE], self.game_info[c.LIVES])
         else:
             self.lcd_controller.keep_display_message("Calculating...")
 
