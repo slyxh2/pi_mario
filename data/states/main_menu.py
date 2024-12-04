@@ -99,8 +99,6 @@ class Menu(tools._State):
         if not self.display_welcome:
             self.display_welcome = True
             self.lcd_controller.keep_display_message("Welcome!", "")
-        else:
-            print("Already welcome")
         self.current_time = current_time
         self.game_info[c.CURRENT_TIME] = self.current_time
         self.update_cursor(keys)

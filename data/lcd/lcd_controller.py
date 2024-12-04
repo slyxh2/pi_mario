@@ -13,6 +13,7 @@ class LCDController:
         self.address = address
         self.queue = queue.Queue()
         self.last_display = {"score": -1, "lives": -1}
+        self.current_display = {"line1": "", "line2": ""}
         self.update_thread = threading.Thread(target=self._process_updates, daemon=True)
         self.update_thread.start()
         self.clear()
@@ -102,18 +103,29 @@ class LCDController:
             self.set_cursor(1, 0)
             self.write(line2[:16])
     
-    def display_message(self, line1, line2="", duration=1):
+    def display_message(self, line1, line2=""):
         """
         Display a custom message on the LCD.
         :param line1: Text for the first line.
         :param line2: Text for the second line (optional).
         """
+        # Truncate messages to 16 characters for LCD width
+        line1 = line1[:16]
+        line2 = line2[:16]
+
+        # Check if the message is the same as the current display
+        if self.current_display["line1"] == line1 and self.current_display["line2"] == line2:
+            return  # No need to update
+
+        # Update current display content
+        self.current_display["line1"] = line1
+        self.current_display["line2"] = line2
+
+        # Clear the queue and display the new message
         self.clear_queue()
         self.clear()
         self.set_cursor(0, 0)
-        self.write(line1[:16])  # LCD is typically 16 characters wide
+        self.write(line1)
         if line2:
             self.set_cursor(1, 0)
-            self.write(line2[:16])
-        time.sleep(duration)
-        self.clear()
+            self.write(line2)
