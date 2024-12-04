@@ -32,6 +32,7 @@ class Menu(tools._State):
         self.overhead_info = info.OverheadInfo(self.game_info, c.MAIN_MENU)
         self.led_controller = led_controller
         self.lcd_controller = lcd_controller
+        self.display_welcome = False
 
         self.sprite_sheet = setup.GFX['title_screen']
         self.setup_background()
