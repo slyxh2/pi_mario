@@ -1377,7 +1377,7 @@ class Level1(tools._State):
 
         if self.persist[c.LIVES] == 0:
             self.led_controller.lit_thread(255, 0, 0, 2)
-            self.lcd_controller.display_message("Game Over!")
+            self.lcd_controller.display_message("No lives left", "Game Over!")
             self.next = c.GAME_OVER
             self.game_info[c.CAMERA_START_X] = 0
         elif self.mario.dead == False:

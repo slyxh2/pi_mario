@@ -6,3 +6,6 @@ Number of LED light used: 5
 3. Die during game: all lit - red, 1s
 4. Lives running out/Timed out: all lit - red, 2s
 4. Success: all lit when entering castle - white, 3s
+Current LCD Implementation:
+1. Enter program: "Welcome!" - 1s
+2. 
