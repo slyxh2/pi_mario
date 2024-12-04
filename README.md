@@ -7,5 +7,8 @@ Number of LED light used: 5
 4. Lives running out/Timed out: all lit - red, 2s
 4. Success: all lit when entering castle - white, 3s
 Current LCD Implementation:
-1. Enter program: "Welcome!" - 1s
-2. 
+1. Enter program: "Welcome!" - keep displaying until enter game
+2. During game: Score: 0 Lives: 0
+3. Lives running out: No lives left, Game Over!
+4. Fast count down after succeed: Calculating...
+5. 

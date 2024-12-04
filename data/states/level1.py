@@ -1406,6 +1406,7 @@ class Level1(tools._State):
             self.state = c.FROZEN
             self.mario.start_death_jump(self.game_info)
             self.led_controller.lit_thread(255, 0, 0, 2)
+            self.lcd_controller.display_message("Timed out", "See you next time!")
 
 
     def update_viewport(self):
@@ -1426,6 +1427,7 @@ class Level1(tools._State):
         if not self.is_lit_active:
             self.is_lit_active = True
             self.led_controller.lit_thread(255, 255, 255, 3)
+            self.lcd_controller.display_message("Congrats", "You Win!")
         for score in self.moving_score_list:
             score.update(self.moving_score_list, self.game_info)
         self.overhead_info_display.update(self.game_info)
